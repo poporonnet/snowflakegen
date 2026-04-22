@@ -70,16 +70,7 @@ jobs:
     # JSR uses OIDC — no secret token is needed.
     environment: jsr
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22.14.0'
-          cache: pnpm
-
-      - run: pnpm install --frozen-lockfile
+      - uses: actions/checkout@v6
 
       - name: Publish to JSR
         run: npx jsr publish

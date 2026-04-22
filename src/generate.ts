@@ -1,4 +1,4 @@
-import { encodeBase32}  from "@std/encoding"
+import { encodeBase32 } from "@jsr/std__encoding/base32"
 
 export type ID<T> = bigint & { readonly __brand: T }
 
@@ -17,7 +17,7 @@ export class SnowflakeIdGenerator<T> {
   #sequence: bigint = 0n;
 
   constructor(options: GeneratorOptions) {
-    if (options.workerId >= 2n ** 10n - 1n) throw new Error("workerId must be between 0 and 1023")
+    if (options.workerId > 2n ** 10n - 1n) throw new Error("workerId must be between 0 and 1023")
     if (options.epochSecond < 0n) throw new Error("invalid epoch");
 
     this.#clock = options.clock;

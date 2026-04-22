@@ -1,4 +1,4 @@
-import { decodeBase32 } from "@std/encoding"
+import { decodeBase32 } from "@jsr/std__encoding/base32"
 
 export type ParsedSnowflakeId = {
   raw: bigint

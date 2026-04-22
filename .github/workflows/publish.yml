@@ -1,0 +1,85 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+
+# OIDC token is required for npm and JSR trusted publishing.
+# Both registries exchange this token for short-lived credentials —
+# no long-lived secrets are needed.
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.14.0'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm test
+
+      - run: pnpm build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  publish-npm:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    # Requires manual approval via the "npm" environment in repo settings.
+    # No NPM_TOKEN needed — authentication is handled via OIDC.
+    environment: npm
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.14.0'
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      # NODE_AUTH_TOKEN must NOT be set — it disables OIDC authentication.
+      - name: Publish to npm
+        run: npm publish --access public --provenance
+
+  publish-jsr:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    # Requires manual approval via the "jsr" environment in repo settings.
+    # JSR uses OIDC — no secret token is needed.
+    environment: jsr
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.14.0'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Publish to JSR
+        run: npx jsr publish

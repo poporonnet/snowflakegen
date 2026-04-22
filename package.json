@@ -1,10 +1,19 @@
 {
-  "name": "snowflakegen",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@poporonnet/snowflakegen",
+  "version": "0.1.0",
+  "description": "Snowflake ID generator and parser for TypeScript",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest run"
@@ -13,13 +22,20 @@
     "type": "git",
     "url": "https://github.com/poporonnet/snowflakegen.git"
   },
-  "private": true,
+  "keywords": [
+    "snowflake",
+    "id",
+    "generator",
+    "distributed"
+  ],
+  "license": "MIT",
+  "packageManager": "pnpm@10.13.1",
   "devDependencies": {
     "@types/node": "^25.6.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.5"
   },
   "dependencies": {
-    "@std/encoding": "jsr:^1.0.10"
+    "@jsr/std__encoding": "^1.0.10"
   }
 }

@@ -20,8 +20,8 @@ function fixedClock(...ticks: bigint[]) {
 describe('初期化', () => {
   it.each([
     {
-      name: 'workerId = 1023 (境界値)',
-      workerId: 1023,
+      name: 'workerId = 1024 (境界値)',
+      workerId: 1024,
       epochSecond: 0n,
       error: 'workerId must be between 0 and 1023',
     },

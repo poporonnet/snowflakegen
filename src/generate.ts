@@ -8,7 +8,7 @@ export interface GeneratorOptions {
   workerId: number
 }
 
-export class SnowflakeIdGenerator<T> {
+export class SnowflakeIdGenerator {
   readonly #clock: () => bigint;
   readonly #workerId: number
   readonly #epoch: bigint
@@ -25,7 +25,7 @@ export class SnowflakeIdGenerator<T> {
     this.#workerId = options.workerId;
   }
 
-  generate(): ID<T> {
+  generate<T>(): ID<T> {
     let now = this.#clock();
 
     if (now < this.#lastTimeStamp) {

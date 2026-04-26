@@ -1,6 +1,6 @@
 {
   "name": "@poporonnet/snowflakegen",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Snowflake ID generator and parser for TypeScript",
   "type": "module",
   "main": "dist/index.js",

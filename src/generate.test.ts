@@ -103,7 +103,7 @@ describe('generate', () => {
     })
 
     let id = 0n
-    for (let i = 0; i < calls; i++) id = gen.generate()
+    for (let i = 0; i < calls; i++) id = gen.generateRawId()
 
     expect(fields(id)).toEqual(expected)
   })
@@ -114,8 +114,8 @@ describe('generate', () => {
       epochSecond: EPOCH,
       clock: fixedClock(BASE_MS + 10n, BASE_MS),
     })
-    gen.generate()
-    expect(() => gen.generate()).toThrow('Clock moved backwards')
+    gen.generateRawId()
+    expect(() => gen.generateRawId()).toThrow('Clock moved backwards')
   })
 
   it('生成された ID は単調増加する', () => {
@@ -126,7 +126,7 @@ describe('generate', () => {
       clock: fixedClock(...ticks),
     })
 
-    const ids = Array.from({ length: 4 }, () => gen.generate())
+    const ids = Array.from({ length: 4 }, () => gen.generateRawId())
     for (let i = 1; i < ids.length; i++) {
       expect(ids[i]).toBeGreaterThan(ids[i - 1])
     }
@@ -144,9 +144,9 @@ describe('generate - sequence overflow', () => {
       clock: () => (callCount++ < 4097 ? BASE_MS : BASE_MS + 1n),
     })
 
-    for (let i = 0; i < 4096; i++) gen.generate()
+    for (let i = 0; i < 4096; i++) gen.generateRawId()
 
-    const id = gen.generate()
+    const id = gen.generateRawId()
     expect(fields(id)).toEqual({ timestamp: 1001n, workerId: 0n, sequence: 0n })
   })
 })

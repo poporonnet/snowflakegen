@@ -1,6 +1,7 @@
 import { encodeBase32 } from "@jsr/std__encoding/base32"
 
-export type ID<T> = bigint & { readonly __brand: T }
+declare const snowflakeNominal: unique symbol;
+export type ID<T> = string & { [snowflakeNominal]: T };
 
 export interface GeneratorOptions {
   clock: () => bigint;
@@ -25,7 +26,7 @@ export class SnowflakeIdGenerator {
     this.#workerId = options.workerId;
   }
 
-  generate<T>(): ID<T> {
+  generateRawId(): bigint {
     let now = this.#clock();
 
     if (now < this.#lastTimeStamp) {
@@ -46,14 +47,14 @@ export class SnowflakeIdGenerator {
     this.#lastTimeStamp = now;
 
     const timestamp = now - this.#epoch * 1000n;
-    return ((timestamp << 22n) | (BigInt(this.#workerId) << 12n) | this.#sequence) as ID<T>;
+    return ((timestamp << 22n) | (BigInt(this.#workerId) << 12n) | this.#sequence);
   }
 
-  encodeWithBase32(): string {
-    const id = this.generate();
+  encodeWithBase32<T>(): ID<T> {
+    const id = this.generateRawId();
     const bytes = new Uint8Array(8);
     new DataView(bytes.buffer).setBigUint64(0, id);
-    return encodeBase32(bytes);
+    return encodeBase32(bytes) as ID<T>;
   }
 
 }
